@@ -1,6 +1,6 @@
-package service;
+package com.ws.bookshoprestserver.service;
 
-import domain.Book;
+import com.ws.bookshoprestserver.domain.Book;
 
 import java.util.List;
 import java.util.Optional;

@@ -2,17 +2,14 @@ package dao;
 
 import com.ws.bookshoprestserver.dao.BookshopDAO;
 import com.ws.bookshoprestserver.dao.BookshopDAOImpl;
-import domain.Author;
-import domain.Book;
-import domain.BookBuilder;
-import domain.BookCategory;
+import com.ws.bookshoprestserver.domain.Author;
+import com.ws.bookshoprestserver.domain.Book;
+import com.ws.bookshoprestserver.domain.BookBuilder;
+import com.ws.bookshoprestserver.domain.BookCategory;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -20,11 +17,6 @@ import java.util.Random;
 import static org.assertj.core.api.Assertions.*;
 
 public class BookshopDAOImplShould {
-
-    private static final String HOST = "jdbc:mysql://localhost:3306/bookshop";
-    private static final String USER = "amir";
-    private static final String PASS = "@wsrmp1378";
-    private static final String CONNECTION_FAILURE_MESSAGE = "we can't connect to database";
     private BookshopDAO dao;
 
     @BeforeEach
@@ -32,17 +24,7 @@ public class BookshopDAOImplShould {
         dao = new BookshopDAOImpl();
     }
 
-    @Test
-    void connect_to_database() {
-        try (Connection connection = DriverManager.getConnection(HOST, USER, PASS)) {
-            if (connection == null)
-                fail(CONNECTION_FAILURE_MESSAGE);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            fail(CONNECTION_FAILURE_MESSAGE);
-        }
 
-    }
 
     @Test
     void get_all_books() {
@@ -53,9 +35,12 @@ public class BookshopDAOImplShould {
 
     @Test
     void get_book_by_id() {
-        Book book = dao.getById("12345678");
+        String id = generateRandomId();
+        addFakeDataToDatabase(id);
+        Book book = dao.getById(id);
 
         Assertions.assertThat(book).isNotNull();
+        dao.deleteBook(id);
     }
 
     @Test

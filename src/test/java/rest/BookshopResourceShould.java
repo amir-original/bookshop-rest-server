@@ -1,10 +1,10 @@
 package rest;
 
 import com.ws.bookshoprestserver.helper.HttpRequestHandler;
-import domain.Author;
-import domain.Book;
-import domain.BookBuilder;
-import domain.BookCategory;
+import com.ws.bookshoprestserver.domain.Author;
+import com.ws.bookshoprestserver.domain.Book;
+import com.ws.bookshoprestserver.domain.BookBuilder;
+import com.ws.bookshoprestserver.domain.BookCategory;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response.Status;
 import org.junit.jupiter.api.BeforeEach;

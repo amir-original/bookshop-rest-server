@@ -1,15 +1,13 @@
 package com.ws.bookshoprestserver.rest;
 
 import com.ws.bookshoprestserver.dao.exceptions.IsbnNotFoundException;
-import domain.Book;
+import com.ws.bookshoprestserver.domain.Book;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import net.bytebuddy.implementation.bytecode.Throw;
-import service.BookService;
-import service.BookServiceImpl;
+import com.ws.bookshoprestserver.service.BookService;
 
 import java.util.List;
 import java.util.Optional;
@@ -60,4 +58,5 @@ public class BookshopResource {
         bookService.update(book);
         return Response.ok(book).build();
     }
+
 }

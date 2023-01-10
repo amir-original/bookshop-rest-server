@@ -1,6 +1,6 @@
 package com.ws.bookshoprestserver.dao;
 
-import domain.Book;
+import com.ws.bookshoprestserver.domain.Book;
 
 import java.util.List;
 

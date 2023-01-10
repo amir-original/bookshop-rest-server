@@ -1,4 +1,4 @@
-package domain;
+package com.ws.bookshoprestserver.domain;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
-package service;
+package com.ws.bookshoprestserver.service;
 
 import com.ws.bookshoprestserver.dao.BookshopDAO;
-import domain.Book;
+import com.ws.bookshoprestserver.domain.Book;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
 

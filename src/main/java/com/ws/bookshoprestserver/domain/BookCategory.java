@@ -1,4 +1,4 @@
-package domain;
+package com.ws.bookshoprestserver.domain;
 
 public class BookCategory {
     private int id;

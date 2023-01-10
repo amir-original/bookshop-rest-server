@@ -4,6 +4,7 @@ import com.ws.bookshoprestserver.dao.exceptions.AuthorIdNotFoundException;
 import com.ws.bookshoprestserver.domain.Author;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -14,7 +15,6 @@ import java.util.List;
 @Path("authors")
 @Stateless
 public class AuthorResource {
-
 
     @EJB
     private AuthorService authorService;
@@ -48,7 +48,7 @@ public class AuthorResource {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response addAuthor(final Author author) {
+    public Response addAuthor(@Valid final Author author) {
         authorService.addAuthor(author);
         return Response.status(Response.Status.CREATED).entity(author).build();
     }
@@ -56,7 +56,7 @@ public class AuthorResource {
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateAuthor(final Author author) throws AuthorIdNotFoundException {
+    public Response updateAuthor(@Valid final Author author) throws AuthorIdNotFoundException {
         Author updatedAuthor = authorService.update(author).orElseThrow(AuthorIdNotFoundException::new);
         return Response.ok(updatedAuthor).build();
     }

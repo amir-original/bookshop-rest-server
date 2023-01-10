@@ -2,11 +2,12 @@ package com.ws.bookshoprestserver.rest;
 
 import com.ws.bookshoprestserver.dao.exceptions.IsbnNotFoundException;
 import com.ws.bookshoprestserver.domain.Book;
+import com.ws.bookshoprestserver.domain.LinkResource;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.*;
 import com.ws.bookshoprestserver.service.BookService;
 
 import java.util.List;
@@ -19,11 +20,20 @@ public class BookshopResource {
     @EJB
     private BookService bookService;
 
+    @Context
+    private UriInfo uriInfo;
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllBooks() {
         List<Book> books = bookService.getAll();
-        return Response.ok(books).build();
+       books.forEach(book -> {
+           Link delete = prepareLink("deleteBook", book, "delete", "DELETE");
+           Link self = prepareLink("getBookByIsbn", book, "self", "GET");
+           addLinksToBook(book, delete, self);
+       });
+        GenericEntity<List<Book>> bookWrapper = new GenericEntity<>(books) {};
+        return Response.ok(bookWrapper).build();
     }
 
     @GET
@@ -31,7 +41,13 @@ public class BookshopResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getBookByIsbn(final @PathParam("isbn") String id) throws IsbnNotFoundException {
         Optional<Book> book = bookService.getById(id);
-        return Response.ok(book.orElseThrow(IsbnNotFoundException::new)).build();
+        if (book.isPresent()) {
+            Link delete = prepareLink("deleteBook", book.get(), "delete", "DELETE");
+            Link self = prepareLink("getBookByIsbn", book.get(), "self", "GET");
+            addLinksToBook(book.get(), delete, self);
+            return Response.ok(book.get()).links(self,delete).build();
+        }
+        throw new IsbnNotFoundException();
     }
 
     @DELETE
@@ -45,8 +61,7 @@ public class BookshopResource {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response addBook(final Book book){
-        System.out.println(book);
+    public Response addBook(@Valid final Book book) {
         bookService.addBook(book);
         return Response.status(Response.Status.CREATED).entity(book).build();
     }
@@ -54,9 +69,25 @@ public class BookshopResource {
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateBook(final Book book){
+    public Response updateBook(@Valid final Book book) {
         bookService.update(book);
         return Response.ok(book).build();
     }
 
+
+    private static void addLinksToBook(Book book, Link delete, Link self) {
+        LinkResource deleteLink = new LinkResource(delete);
+        LinkResource selfLink = new LinkResource(self);
+        book.addLink(deleteLink);
+        book.addLink(selfLink);
+    }
+
+    private Link prepareLink(String methodName, Book book, String rel, String type) {
+        return Link.fromUri(uriInfo.getBaseUriBuilder()
+                        .path(getClass())
+                        .path(getClass(), methodName)
+                        .build(book.getId()))
+                .rel(rel)
+                .type(type).build();
+    }
 }

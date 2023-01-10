@@ -1,13 +1,24 @@
 package com.ws.bookshoprestserver.domain;
 
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
+import java.io.Serializable;
 import java.util.List;
 
-public class Book {
+public class Book extends HyperMedia implements Serializable {
+    @Size(min = 8,max = 8)
     private  String id;
+    @Size(min = 5)
     private  String title;
+    @Size(min = 5)
     private  String description;
+    @NotNull
     private  BookCategory category;
+    @NotNull
     private  List<Author> authors;
+    @DecimalMin("00.0")
     private  float price;
     private String link;
 

@@ -1,10 +1,14 @@
 package com.ws.bookshoprestserver.domain;
 
+import jakarta.validation.constraints.Size;
+
 import java.util.Objects;
 
 public class Author {
     private int id;
+    @Size(min = 5)
     private String firstName;
+    @Size(min = 5)
     private String lastName;
 
     public Author() {

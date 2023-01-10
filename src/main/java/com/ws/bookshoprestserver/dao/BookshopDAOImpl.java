@@ -17,19 +17,16 @@ import java.util.List;
 public class BookshopDAOImpl implements BookshopDAO {
 
     private final Gson gson = new Gson();
-
-    private AuthorDAO authorDAO;
     private Connection connection;
 
     public BookshopDAOImpl() {
-        init();
+       init();
     }
 
     @PostConstruct
     private void init() {
         MySQLDbConnection mySQLDbConnection = new MySQLDbConnection();
         connection = mySQLDbConnection.getConnection();
-        authorDAO = new AuthorDAOImpl();
     }
 
 
@@ -114,7 +111,6 @@ public class BookshopDAOImpl implements BookshopDAO {
             insert.setString(6, gson.toJson(book.getCategory()));
             insert.setString(7, gson.toJson(book.getAuthors()));
             insert.setString(8, book.getImagePath());
-            authorDAO.addAuthors(book.getAuthors());
             insert.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

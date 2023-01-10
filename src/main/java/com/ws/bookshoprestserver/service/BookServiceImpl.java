@@ -10,7 +10,6 @@ import java.util.Optional;
 
 @Stateless
 public class BookServiceImpl implements BookService {
-
     @EJB
     private BookshopDAO dao;
 

@@ -25,7 +25,6 @@ public class BookshopDAOImplShould {
     }
 
 
-
     @Test
     void get_all_books() {
         List<Book> books = dao.getAll();

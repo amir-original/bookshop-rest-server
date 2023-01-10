@@ -1,5 +1,7 @@
 package rest;
 
+import com.ws.bookshoprestserver.dao.AuthorDAO;
+import com.ws.bookshoprestserver.dao.AuthorDAOImpl;
 import com.ws.bookshoprestserver.helper.HttpRequestHandler;
 import com.ws.bookshoprestserver.domain.Author;
 import jakarta.ws.rs.core.MediaType;
@@ -8,6 +10,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.net.http.HttpResponse;
+import java.util.Optional;
+import java.util.Random;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -46,11 +50,11 @@ public class AuthorResourceShould {
     @Test
     void delete_author() {
         int id = 8;
+        HttpResponse<String> respone = addAuthor(new Author("name1", "name2"));
         HttpResponse<String> response = handler.target(END_POINT)
                 .path("/"+id)
                 .mediaType(MediaType.APPLICATION_JSON).DELETE().build();
-        //Author author = handler.getResponse(response, Author.class);
-        //TODO: create author here then check values too
+
         assertThat(response.statusCode()).isEqualTo(Response.Status.NO_CONTENT.getStatusCode());
     }
 
@@ -81,6 +85,16 @@ public class AuthorResourceShould {
         return handler
                 .target(END_POINT)
                 .mediaType(MediaType.APPLICATION_JSON)
-                .POST(author).build();
+                .POST(author)
+                .build();
+    }
+
+    private Optional<Author> addAuthor() {
+        Random random = new Random();
+        int i = random.nextInt(100);
+        Author author = new Author("name "+i, "lastname "+i);
+        AuthorDAO authorDAO = new AuthorDAOImpl();
+        Integer lastId = authorDAO.addAuthor(author);
+        return authorDAO.getById(lastId);
     }
 }

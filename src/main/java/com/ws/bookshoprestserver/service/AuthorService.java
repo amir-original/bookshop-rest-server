@@ -11,7 +11,7 @@ public interface AuthorService {
 
     Optional<Author> getById(int id);
 
-    void addAuthor(Author author);
+    Optional<Integer> addAuthor(Author author);
 
     int deleteAuthor(int id);
 

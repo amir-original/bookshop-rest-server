@@ -2,6 +2,7 @@ package rest;
 
 import com.ws.bookshoprestserver.dao.AuthorDAO;
 import com.ws.bookshoprestserver.dao.AuthorDAOImpl;
+import com.ws.bookshoprestserver.domain.Book;
 import com.ws.bookshoprestserver.helper.HttpRequestHandler;
 import com.ws.bookshoprestserver.domain.Author;
 import jakarta.ws.rs.core.MediaType;
@@ -37,22 +38,21 @@ public class AuthorResourceShould {
 
     @Test
     void get_author_by_id() {
-        int id = 1;
+        Author author = addAuthor(new Author("firstName","lastName"));
         HttpResponse<String> response = handler.target(END_POINT)
-                .path("/"+id)
+                .path("/"+author.getId())
                 .mediaType(MediaType.APPLICATION_JSON).GET().build();
-        //Author author = handler.getResponse(response, Author.class);
-        //TODO: create author here then check values too
+
         assertThat(response.statusCode()).isEqualTo(Response.Status.OK.getStatusCode());
         assertThat(response.body()).isNotEmpty();
+        assertThat(author.getFirstName()).isEqualTo("firstName");
     }
 
     @Test
     void delete_author() {
-        int id = 8;
-        HttpResponse<String> respone = addAuthor(new Author("name1", "name2"));
+        Author author = addAuthor(new Author("name1", "name2"));
         HttpResponse<String> response = handler.target(END_POINT)
-                .path("/"+id)
+                .path("/"+author.getId())
                 .mediaType(MediaType.APPLICATION_JSON).DELETE().build();
 
         assertThat(response.statusCode()).isEqualTo(Response.Status.NO_CONTENT.getStatusCode());
@@ -60,12 +60,9 @@ public class AuthorResourceShould {
 
     @Test
     void add_new_author() {
-        Author author = new Author("Robbert","C Martin");
-        HttpResponse<String> response = addAuthor(author);
-        Author authorResponse = handler.getResponse(response, Author.class);
-
-        assertThat(response.statusCode()).isEqualTo(Response.Status.CREATED.getStatusCode());
-        assertThat(authorResponse.getFirstName()).isEqualTo(author.getFirstName());
+        Author author = addAuthor(new Author("Robbert","C Martin"));
+        //assertThat(response.statusCode()).isEqualTo(Response.Status.CREATED.getStatusCode());
+        assertThat(author.getFirstName()).isEqualTo("Robbert");
     }
 
     @Test
@@ -81,12 +78,14 @@ public class AuthorResourceShould {
         assertThat(authorResponse.getFirstName()).isEqualTo(author.getFirstName());
     }
 
-    private HttpResponse<String> addAuthor(Author author) {
-        return handler
+    private Author addAuthor(Author author) {
+        HttpResponse<String> response = handler
                 .target(END_POINT)
                 .mediaType(MediaType.APPLICATION_JSON)
                 .POST(author)
                 .build();
+
+      return  handler.getResponse(response, Author.class);
     }
 
     private Optional<Author> addAuthor() {

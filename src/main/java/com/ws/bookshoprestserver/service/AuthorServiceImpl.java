@@ -24,8 +24,8 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public void addAuthor(Author author) {
-        dao.addAuthor(author);
+    public Optional<Integer> addAuthor(Author author) {
+        return Optional.ofNullable(dao.addAuthor(author));
     }
 
     @Override

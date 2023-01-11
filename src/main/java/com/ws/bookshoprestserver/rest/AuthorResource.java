@@ -11,6 +11,7 @@ import jakarta.ws.rs.core.Response;
 import com.ws.bookshoprestserver.service.AuthorService;
 
 import java.util.List;
+import java.util.Optional;
 
 @Path("authors")
 @Stateless
@@ -49,8 +50,12 @@ public class AuthorResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addAuthor(@Valid final Author author) {
-        authorService.addAuthor(author);
-        return Response.status(Response.Status.CREATED).entity(author).build();
+        Optional<Integer> lastId = authorService.addAuthor(author);
+        Author entity = null;
+        if (lastId.isPresent()){
+            entity = new Author(lastId.get(),author.getFirstName(),author.getLastName());
+        }
+       return Response.status(Response.Status.CREATED).entity(entity).build();
     }
 
     @PUT
